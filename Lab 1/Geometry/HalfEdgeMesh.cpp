@@ -349,7 +349,8 @@ Vector3<float> HalfEdgeMesh::VertexNormal(size_t vertexIndex) const {
         n += f(faces[i]).normal;
     }
 
-    n = n / faces.size();  // Make sure to normalize the normal again before returning
+    // Make sure to normalize the normal again before returning
+    n = n / faces.size();  
 
     return n;
 }
