@@ -57,19 +57,71 @@ void QuadricDecimationMesh::computeCollapse(EdgeCollapse *collapse) {
     Matrix4x4<float> Q2 = mQuadrics.at(indx2);
 
 	Matrix4x4<float> Q = Q1 + Q2;
-    
+   
+	/* We want to find the vertex newPos that gives
+	 * us the minimal possible cost. This is solved
+	 * with the equation Q*newPos = 0. To solve the
+	 * equation we use the inverse of Q and multiply
+	 * it with the zero vector. */
+
 	/* Create a matrix Qeq from Q (to be used in the equation)
-	 * and set the fourth row to [0 0 0 1] */
+	 * from deriving v over x, y and z
+	 * and set the fourth row to [0 0 0 1] (w = 1) */
 	Matrix4x4<float> Qeq = Q;
-    
 	Qeq(3, 0) = 0.0f;
-    Qeq(3, 1) = 0.0f;
-    Qeq(3, 2) = 0.0f;
-    Qeq(3, 3) = 1.0f;
+	Qeq(3, 1) = 0.0f;
+	Qeq(3, 2) = 0.0f;
+	Qeq(3, 3) = 1.0f;
 
+	/* Finding the best vertex newPos is only possible 
+	 * if Qeq is not singular */
+	if (!Qeq.IsSingular)
+	{
+		// Create zero-vector used for equation and the vector newPos
+		Vector4<float> zeroVec( 0,0,0,1 );
+		Vector4<float> newPos = Qeq.Inverse * zeroVec;
 
+		// Compute position for collapse
+		collapse->position = Vector3<float>(newPos[0], newPos[1], newPos[2]);
 
-    std::cerr << "computeCollapse in QuadricDecimationMesh not implemented.\n";
+		// Compute cost for collapse at collapse-position
+		Vector4<float> v = { newPos[0], newPos[1], newPos[2], 1 };
+		collapse->cost = v * (Q * v);
+	}
+	/* In the unfortunate case where Qeq is singular (not inversible)
+	 * we decide the position of the collapse by comparing the cost of
+	 * moving v1 to v2, v2 to v1 or using an intermediate vertex 
+	 * v = (v1 + v2 )/ 2 */
+	else
+	{
+		// Case 1, we use v1->v2
+		Vector3<float> v1 = v(indx1).pos;
+		Vector4<float> vec1 = { v1[0], v1[1], v1[2], 1 };
+		float cost1 = vec1 * (Q * vec1);
+
+		// Case 2, we use v2->v1
+		Vector3<float> v2 = v(indx2).pos;
+		Vector4<float> vec2 = { v2[0], v2[1], v2[2], 1 };
+		float cost2 = vec2 * (Q * vec2);
+
+		// Case 3, we use v3 = (v1 + v2) / 2
+		Vector3<float> v3 = (v1 + v2) / 2;
+		Vector4<float> vec3 = { v3[0], v3[1], v3[2], 1 };
+		float cost3 = vec3 * (Q * vec3);
+
+		// Assign the lowest cost to collapse->cost
+		collapse->cost = std::min(cost1, cost2, cost3);
+
+		// Update collapse->position according to which cost was the smallest
+		if (collapse->cost == cost1)
+			collapse->position = v1;
+		else if (collapse->cost == cost2)
+			collapse->position = v2;
+		else
+			collapse->position = v3;
+	}
+
+    //std::cerr << "computeCollapse in QuadricDecimationMesh not implemented.\n";
 }
 
 /*! After each edge collapse the vertex properties need to be updated */
@@ -86,15 +138,16 @@ Matrix4x4<float> QuadricDecimationMesh::createQuadricForVert(size_t indx) const 
     float q[4][4] = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
     Matrix4x4<float> Q(q);
 
+	// Get the one-ring of the vertex in order to be able to calculate the quadric for the adjacent faces
     std::vector<size_t> oneRing = HalfEdgeMesh::FindNeighborVertices(indx);
 
+	// The quadric for a vertex is the sum of all the quadrics for the adjacent
+	// faces Tip: Matrix4x4 has an operator +=
     for (int i = 0; i < oneRing.size(); i++) {
     
 		Q += createQuadricForFace(i);
 	}
 
-    // The quadric for a vertex is the sum of all the quadrics for the adjacent
-    // faces Tip: Matrix4x4 has an operator +=
     return Q;
 }
 
@@ -106,29 +159,31 @@ Matrix4x4<float> QuadricDecimationMesh::createQuadricForFace(size_t indx) const 
     // Calculate the quadric (outer product of plane parameters) for a face
     // here using the formula from Garland and Heckbert
 
-    // (a,b,c)
+    // v0 = (x,y,z) is a point in the plane
     Vector3<float> position = v(e(f(indx).edge).vert).pos;
 
-    // (x,y,z)
+    // n = (a,b,c) is the normal of the plane
     Vector3<float> normal = f(indx).normal;
 
-    /* Distance is calculated with dot product of position and normal,
+    /* d is calculated with dot product of position and normal,
+	 * v0 * n = -d
      * and multiplied with -1.0 according to ax + by + cz = -d	*/
-    float distance = (position * normal) * -1.0;
+    float d = (position * normal) * -1.0;
 
     /*
-     *  Q = | (a*a) (a*b) (a*c) (a*d) |
+     * Kp = | (a*a) (a*b) (a*c) (a*d) |
      *		| (b*a) (b*b) (b*c) (b*d) |
      *		| (c*a) (c*b) (c*c) (c*d) |
      *		| (d*d) (a*d) (a*d) (d*d) |
      */
-    float q[4][4] = {
-        {normal[0] * normal[0], normal[0] * normal[1], normal[0] * normal[2], normal[0] * distance},
-        {normal[1] * normal[0], normal[1] * normal[1], normal[1] * normal[2], normal[1] * distance},
-        {normal[2] * normal[0], normal[2] * normal[1], normal[2] * normal[2], normal[2] * distance},
-        {normal[0] * distance, normal[1] * distance, normal[2] * distance, distance * distance}};
+    float Kp[4][4] = {
+        {normal[0] * normal[0], normal[0] * normal[1], normal[0] * normal[2], normal[0] * d},
+        {normal[1] * normal[0], normal[1] * normal[1], normal[1] * normal[2], normal[1] * d},
+        {normal[2] * normal[0], normal[2] * normal[1], normal[2] * normal[2], normal[2] * d},
+        {normal[0] * d, normal[1] * d, normal[2] * d, d * d}};
 
-    return Matrix4x4<float>(q);
+	// Return Kp to be summed with the other Kp-matrices to create Q
+    return Matrix4x4<float>(Kp);
 }
 
 void QuadricDecimationMesh::Render() {
