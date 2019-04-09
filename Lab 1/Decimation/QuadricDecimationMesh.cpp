@@ -110,7 +110,7 @@ void QuadricDecimationMesh::computeCollapse(EdgeCollapse *collapse) {
 		float cost3 = vec3 * (Q * vec3);
 
 		// Assign the lowest cost to collapse->cost
-		collapse->cost = std::min(cost1, cost2, cost3);
+		collapse->cost = std::min(std::min(cost1, cost2), cost3);	//std::min only takes two arguments
 
 		// Update collapse->position according to which cost was the smallest
 		if (collapse->cost == cost1)
