@@ -75,11 +75,11 @@ void QuadricDecimationMesh::computeCollapse(EdgeCollapse *collapse) {
 
 	/* Finding the best vertex newPos is only possible 
 	 * if Qeq is not singular */
-	if (!Qeq.IsSingular)
+	if (!Qeq.IsSingular())
 	{
 		// Create zero-vector used for equation and the vector newPos
 		Vector4<float> zeroVec( 0,0,0,1 );
-		Vector4<float> newPos = Qeq.Inverse * zeroVec;
+		Vector4<float> newPos = Qeq.Inverse() * zeroVec;
 
 		// Compute position for collapse
 		collapse->position = Vector3<float>(newPos[0], newPos[1], newPos[2]);
