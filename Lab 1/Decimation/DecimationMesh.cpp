@@ -180,12 +180,13 @@ bool DecimationMesh::decimate() {
   size_t f2 = mEdges[e2].face;
 
 #ifndef NDEBUG
-  std::cout << "Collapsing faces " << f1 << " and " << f2 << std::endl;
-  std::cout << "Collapsing edges " << e1 << ", " << mEdges[e1].next << ", "
-            << mEdges[e1].prev;
-  std::cout << ", " << e2 << ", " << mEdges[e2].next << " and "
-            << mEdges[e2].prev << std::endl;
-  std::cout << "Collapsing vertex " << v1 << std::endl;
+  //// Commented out because run-time increased when printing all the text
+  //std::cout << "Collapsing faces " << f1 << " and " << f2 << std::endl;
+  //std::cout << "Collapsing edges " << e1 << ", " << mEdges[e1].next << ", "
+  //          << mEdges[e1].prev;
+  //std::cout << ", " << e2 << ", " << mEdges[e2].next << " and "
+  //          << mEdges[e2].prev << std::endl;
+  //std::cout << "Collapsing vertex " << v1 << std::endl;
 #endif
 
   // Verify that the collapse is valid, exit if not so
@@ -282,7 +283,8 @@ bool DecimationMesh::decimate() {
         mHalfEdge2EdgeCollapse[edge] = NULL;
         mHalfEdge2EdgeCollapse[mEdges[edge].pair] = NULL;
 #ifndef NDEBUG
-        std::cout << "Removed one invalid edge collapse" << std::endl;
+		//// Commented out because printing text increases execution time
+        //std::cout << "Removed one invalid edge collapse" << std::endl;
 #endif
       } else {
         computeCollapse(collapse);
