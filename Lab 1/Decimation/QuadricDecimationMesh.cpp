@@ -64,12 +64,6 @@ void QuadricDecimationMesh::computeCollapse(EdgeCollapse *collapse) {
      * equation we use the inverse of Q and multiply
      * it with the zero vector. */
 
-    //Matrix4x4<float> Qeq = Q;
-    //Qeq(3, 0) = 0.0f;
-    //Qeq(3, 1) = 0.0f;
-    //Qeq(3, 2) = 0.0f;
-    //Qeq(3, 3) = 1.0f;
-
 	/* Create a matrix Qeq from Q (to be used in the equation)
      * from deriving v over x, y and z
      * and set the fourth row to [0 0 0 1] (w = 1) */
