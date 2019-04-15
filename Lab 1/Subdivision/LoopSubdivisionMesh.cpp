@@ -108,12 +108,18 @@ LoopSubdivisionMesh::Subdivide(size_t faceIndex) {
 Vector3<float> LoopSubdivisionMesh::VertexRule(size_t vertexIndex) {
   // Get the current vertex
   Vector3<float> vtx = v(vertexIndex).pos;
-  //get the valence from size of 1-ring
+  // Get the valence from size of 1-ring
   std::vector<size_t> oneRing = HalfEdgeMesh::FindNeighborVertices(vertexIndex);
-  float beta = Beta(oneRing.size());
-  // update vtx with the weight (fig 17. 1-k*beta)
-  vtx = 1 - (oneRing.size() * beta);
+  float beta = Beta(oneRing.size());	// Calculate beta
 
+  // Update vtx with the weight (fig 17. 1-k*beta)
+  vtx *= (1 - oneRing.size() * beta);
+
+  // Update weight for the neighbouring vertices
+  for (int i = 0; i < oneRing.size(); ++i)
+  {
+	  vtx += v(oneRing.at(i)).pos * beta;
+  }
   return vtx;
 }
 
@@ -124,11 +130,11 @@ Vector3<float> LoopSubdivisionMesh::EdgeRule(size_t edgeIndex) {
   // Place the edge vertex halfway along the edge
   HalfEdge &e0 = e(edgeIndex);
   HalfEdge &e1 = e(e0.pair);
-  Vector3<float> &v0 = v(e0.vert).pos; //left
-  Vector3<float> &v1 = v(e1.vert).pos; // right
-  Vector3<float> &v2 = v((e(e0.next)).vert).pos; // up
-  Vector3<float> &v3 = v((e(e1.next)).vert).pos; // down 
-  return (3*v0 + 3*v1 + v2 + v3) * (1.0f/8.0f);
+  Vector3<float> &v0 = v(e0.vert).pos;			// Left
+  Vector3<float> &v1 = v(e1.vert).pos;			// Right
+  Vector3<float> &v2 = v(e(e0.prev).vert).pos;	// Up
+  Vector3<float> &v3 = v(e(e1.prev).vert).pos;	// Down 
+  return (3.0f / 8.0f) * (v0 + v1) + (1.0f / 8.0f) * (v2 + v3);	// Split up fractions for proper precision
   
 }
 
