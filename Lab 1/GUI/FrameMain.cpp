@@ -739,8 +739,10 @@ void FrameMain::AddObjectImplicitMesh(wxCommandEvent &event) {
 }
 
 void FrameMain::AddObjectQuadricPlane(wxCommandEvent &event) {
-  Matrix4x4<float> M;
+  
   // Construct the quadric matrix here
+  float plane[4][4] = {{0, 0, 0, 0.5f}, {0, 0, 0, 0.5f}, {0, 0, 0, 0.5f}, {0.5f, 0.5f, 0.5f, 1}};
+  Matrix4x4<float> M(plane);
 
   Quadric *Q = new Quadric(M);
   Q->SetBoundingBox(Bbox(-1, 1));
@@ -753,8 +755,10 @@ void FrameMain::AddObjectQuadricPlane(wxCommandEvent &event) {
 }
 
 void FrameMain::AddObjectQuadricCylinder(wxCommandEvent &event) {
-  Matrix4x4<float> M;
+
   // Construct the quadric matrix here
+  float cylinder[4][4] = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 1}};
+  Matrix4x4<float> M(cylinder);
 
   Quadric *Q = new Quadric(M);
   Q->SetBoundingBox(Bbox(-1, 1));
@@ -767,8 +771,10 @@ void FrameMain::AddObjectQuadricCylinder(wxCommandEvent &event) {
 }
 
 void FrameMain::AddObjectQuadricEllipsoid(wxCommandEvent &event) {
-  Matrix4x4<float> M;
+
   // Construct the quadric matrix here
+  float ellipsoid[4][4] = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+  Matrix4x4<float> M(ellipsoid);
 
   Quadric *Q = new Quadric(M);
   Q->SetBoundingBox(Bbox(-1, 1));
@@ -781,8 +787,10 @@ void FrameMain::AddObjectQuadricEllipsoid(wxCommandEvent &event) {
 }
 
 void FrameMain::AddObjectQuadricCone(wxCommandEvent &event) {
-  Matrix4x4<float> M;
+
   // Construct the quadric matrix here
+  float quadCone[4][4] = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}};
+  Matrix4x4<float> M(quadCone);
 
   Quadric *Q = new Quadric(M);
   Q->SetBoundingBox(Bbox(-1, 1));
@@ -795,8 +803,10 @@ void FrameMain::AddObjectQuadricCone(wxCommandEvent &event) {
 }
 
 void FrameMain::AddObjectQuadricParaboloid(wxCommandEvent &event) {
-  Matrix4x4<float> M;
+
   // Construct the quadric matrix here
+  float paraboloid[4][4] = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, -1}, {0, 0, -1, 0}};
+  Matrix4x4<float> M(paraboloid);
 
   Quadric *Q = new Quadric(M);
   Q->SetBoundingBox(Bbox(-2, 2));
@@ -809,8 +819,10 @@ void FrameMain::AddObjectQuadricParaboloid(wxCommandEvent &event) {
 }
 
 void FrameMain::AddObjectQuadricHyperboloid(wxCommandEvent &event) {
-  Matrix4x4<float> M;
+
   // Construct the quadric matrix here
+  float hyperboloid[4][4] = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, -1, 0}, {0, 0, 0, 1}};
+  Matrix4x4<float> M(hyperboloid);
 
   Quadric *Q = new Quadric(M);
   Q->SetBoundingBox(Bbox(-2, 2));
