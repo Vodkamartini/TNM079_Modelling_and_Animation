@@ -1,0 +1,14 @@
+How to set up CMake
+1. Run CMake
+2. Make sure there is a folder named "Build" in your project folder.
+   (If there is not such a folder, create one!)
+3. In CMake, locate the paths to both the project folder and the "Build" folder
+4. Choose configure
+5. If the configuration succeeded, generate the project.
+6. Finally, open the project via CMake.
+
+Lab 5
+The signed distance property (3)
+- How should the gradients and the level sets look when the
+  levelset function is properly reinitialized?
+- What exactly does reinitialization mean and why is it neccessary?
