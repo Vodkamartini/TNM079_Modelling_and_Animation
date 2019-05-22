@@ -65,7 +65,7 @@ public:
         // the velocity field used for advection needs to be sampled in
         // world coordinates (x,y,z). You can use LevelSet::TransformGridToWorld()
         // for this task.
-        float x = static_cast<float>(i), y = static_cast<float>(j), z = static_cast<float>(k);
+        float x = i, y = j, z = k;
         mLS->TransformGridToWorld(x, y, z);  // Transform grid coordinates to world coordinates
 
         Vector3<float> v = mVectorField->GetValue(x, y, z);
@@ -77,13 +77,13 @@ public:
         else
             grad[0] = mLS->DiffXm(i, j, k);
         if (v[1] < 0)	// y-component
-            grad[1] = mLS->DiffXp(i, j, k);
+            grad[1] = mLS->DiffYp(i, j, k);
         else
-            grad[1] = mLS->DiffXm(i, j, k); 
+            grad[1] = mLS->DiffYm(i, j, k); 
 		if (v[2] < 0)	// z-component
-            grad[2] = mLS->DiffXp(i, j, k);
+            grad[2] = mLS->DiffZp(i, j, k);
         else
-            grad[2] = mLS->DiffXm(i, j, k);
+            grad[2] = mLS->DiffZm(i, j, k);
 		// According to first eq in 3.1
 		return (-1*v) * grad;
     }
