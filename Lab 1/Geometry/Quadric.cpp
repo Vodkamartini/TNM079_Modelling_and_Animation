@@ -21,18 +21,9 @@ Quadric::~Quadric() {}
  * coefficient matrix by GetTransform() ONCE (see Section 2.2 in lab text).
  */
 float Quadric::GetValue(float x, float y, float z) const {
-
-    // Calculate p prime
-    Vector4<float> p(x, y, z, 1);
-    Vector4<float> p_prime = mWorld2Obj * p;
-
-    // Calculate Q prime
-    // Matrix4x4<float> Q_prime = mWorld2Obj.Inverse() * (mQuadric * mWorld2Obj.Inverse());
-
-    Matrix4x4<float> Q_prime = GetTransform() * mQuadric;
-
-    // Calculate value
-    return p * (Q_prime * p);
+	TransformW2O(x, y, z);
+	Vector4<float> xVec(x, y, z, 1.0f);
+	return xVec * (mQuadric * xVec);
 }
 
 /*!

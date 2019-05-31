@@ -1,3 +1,0 @@
-X:/TNM079/TNM079_Modelling_and_Animation/Lab 1/Build/CMakeFiles/MoA.dir
-X:/TNM079/TNM079_Modelling_and_Animation/Lab 1/Build/CMakeFiles/ALL_BUILD.dir
-X:/TNM079/TNM079_Modelling_and_Animation/Lab 1/Build/CMakeFiles/ZERO_CHECK.dir

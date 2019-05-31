@@ -39,7 +39,7 @@ public:
         // (Hint: Function3D::GetMaxValue())
         Vector3<float> maxV = mVectorField->GetMaxValue();
         float max = std::max(std::max(maxV[0], maxV[1]), maxV[2]);
-        return 0.5f * (mLS->GetDx() / abs(max));
+        return 0.9f * (mLS->GetDx() / abs(max));
     }
 
     virtual void Propagate(float time) {
@@ -85,7 +85,7 @@ public:
         else
             grad[2] = mLS->DiffZm(i, j, k);
 		// According to first eq in 3.1
-		return (-1*v) * grad;
+		return ((-v) * grad);
     }
 };
 

@@ -1,4 +1,4 @@
-# Install script for directory: X:/TNM079/TNM079_Modelling_and_Animation/Lab 1
+# Install script for directory: D:/Users/Martini/Desktop/TNM079 - Modellering och animering/TNM079_Modelling_and_Animation/Lab 1
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "X:/TNM079/TNM079_Modelling_and_Animation/Lab 1/Build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "D:/Users/Martini/Desktop/TNM079 - Modellering och animering/TNM079_Modelling_and_Animation/Lab 1/Build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
